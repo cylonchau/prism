@@ -1,0 +1,30 @@
+
+# Prism
+
+## Overview
+**Prism** is an IaA (Infrastructure as API) platform. that provides unified API interfaces for multi-cloud through EAV (Entity-Attribute-Value) model-based Terraform trasform, Prism provides schema-free, provider-agnostic infrastructure operations across multi-cloud environments.
+
+**Inspired by:** [WeCube Terraform Plugin](https://github.com/WeBankPartners/wecube-plugins-terraform) - evolved with modern API design and flexible data modeling.
+
+## Concept
+
+Prism unifies these differences into standard APIs through an abstraction layer:
+
+
+```
+User API Request
+    ↓
+Prism (Unified API)
+    ↓
+Terraform (Multi-Cloud)
+    ↓
+AWS | GCP | Tencent Cloud | Alibaba Cloud | Kubernetes | Openstack | ...
+```
+
+## Key Innovations
+- Multi-Cloud Platform Engineering.
+- Dynamic EAV Model Architecture.
+    - Schema-free resource modeling supporting any cloud provider without database migrations.
+- Safe
+    - Safe operations with built-in validation, state management, and rollback mechanisms.
+    - Provider abstraction layer hiding cloud-specific complexities.
