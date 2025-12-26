@@ -4,7 +4,10 @@ go 1.24
 
 require (
 	github.com/glebarez/sqlite v1.11.0
+	github.com/gorilla/websocket v1.5.3
+	github.com/looplab/fsm v1.0.3
 	github.com/rs/zerolog v1.34.0
+	github.com/tidwall/gjson v1.18.0
 	go.uber.org/zap v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/mysql v1.6.0
@@ -27,6 +30,8 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect

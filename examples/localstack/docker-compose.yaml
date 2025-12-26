@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: localstack_main
+    image: localstack/localstack
+    ports:
+      - "4566:4566"            # LocalStack Gateway (所有 AWS API 都走这个端口)
+    environment:
+      - SERVICES=s3,ec2,eks,iam,sts,cloudwatch # 指定开启的服务，节省资源
+      - DEBUG=1                 # 开启调试日志，方便看 Terraform 的报错
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
