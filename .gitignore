@@ -1,4 +1,3 @@
-cat > .gitignore << 'EOF'
 # 编译输出
 executor_demo
 /main
@@ -75,4 +74,3 @@ examples/**/volume/
 examples/**/.terraform/
 examples/**/*.tfstate
 examples/**/*.tfstate.*
-EOF
