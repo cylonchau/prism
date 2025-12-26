@@ -1,3 +1,4 @@
+cat > .gitignore << 'EOF'
 # 编译输出
 executor_demo
 /main
@@ -30,11 +31,6 @@ Thumbs.db
 
 # 文档 (doc 目录下所有 .md 文件)
 doc/**/*.md
-# 但保留 doc 目录结构本身
-!doc/
-!doc/**/
-# 如果需要保留某些重要文档,可以这样:
-# !doc/README.md
 
 # Terraform 相关
 *.tfstate
@@ -63,8 +59,6 @@ tmp/
 temp/
 *.tmp
 *.bak
-*.swp
-*~
 
 # 构建输出
 dist/
@@ -81,3 +75,4 @@ examples/**/volume/
 examples/**/.terraform/
 examples/**/*.tfstate
 examples/**/*.tfstate.*
+EOF
