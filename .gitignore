@@ -1,65 +1,83 @@
-# Binaries for programs and plugins
+# 编译输出
+executor_demo
+/main
 *.exe
-*.exe~
 *.dll
 *.so
 *.dylib
 
-# Test binary, built with `go test -c`
+# 测试覆盖
 *.test
+coverage.out
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+# Go 依赖
+vendor/
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
-.DS_Store
-firewalld-gateway
-doc/*
-doc
-_output/*
-_output
-1/*
-1
-.idea
-*.db
-main
-/dist/
-
-# deb build artifacts
-/debian/process-exporter/
-/debian/.debhelper/
-/debian/files
-/debian/*.debhelper*
-/debian/*.substvars
-
-# RPM build artifacts
-rpmbuild/
-
-# Parent directory artifacts
-../*.deb
-../*.rpm
-../*.buildinfo
-../*.changes
-
-# Rust build/cache
-# Ignore all target dirs in any sub-crate
-**/target/
-**/.cargo/
-**/.rustup/
-**/clippy.toml
-**/rustfmt.toml
-
-# IDE / Editor configs
-.vscode/
+# IDE 配置
 .idea/
+.vscode/
+*.swp
+*.swo
+*.iml
 
-# Temporary / Environment
-.env
-.venv
+# 操作系统
+.DS_Store
+Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# 文档 (doc 目录下所有 .md 文件)
+doc/**/*.md
+# 但保留 doc 目录结构本身
+!doc/
+!doc/**/
+# 如果需要保留某些重要文档,可以这样:
+# !doc/README.md
+
+# Terraform 相关
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfstate.*.backup
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 日志文件
 *.log
+
+# 临时文件
+tmp/
+temp/
 *.tmp
 *.bak
 *.swp
-.DS_Store
-Thumbs.db
+*~
+
+# 构建输出
+dist/
+build/
+_output/
+
+# 环境变量
+.env
+.env.*
+!.env.example
+
+# 示例/测试的本地配置
+examples/**/volume/
+examples/**/.terraform/
+examples/**/*.tfstate
+examples/**/*.tfstate.*
