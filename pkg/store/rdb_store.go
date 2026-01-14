@@ -17,29 +17,33 @@ import (
 )
 
 var (
-	// 单例模式
-	instance *UnionRDBStoreInterface
+	instance Store
 	initOnce sync.Once
 )
 
-// 统一RDB接口
-type UnionRDBStoreInterface struct {
+// RDBStore implements the Store interface for relational databases.
+type RDBStore struct {
 	db     *gorm.DB
 	config DatabaseConfig
 	once   sync.Once
 	mu     sync.RWMutex
 }
 
-// GetInstance 获取数据库管理器单例
-func GetInstance() *UnionRDBStoreInterface {
+// GetInstance returns the singleton store instance.
+func GetInstance() Store {
 	initOnce.Do(func() {
-		instance = &UnionRDBStoreInterface{}
+		instance = &RDBStore{}
 	})
 	return instance
 }
 
+// NewRDBStore creates a new RDBStore instance (useful for testing).
+func NewRDBStore() *RDBStore {
+	return &RDBStore{}
+}
+
 // Initialize 初始化数据库连接
-func (m *UnionRDBStoreInterface) Initialize(config DatabaseConfig) error {
+func (m *RDBStore) Initialize(config DatabaseConfig) error {
 	var initErr error
 
 	m.once.Do(func() {
@@ -70,14 +74,14 @@ func (m *UnionRDBStoreInterface) Initialize(config DatabaseConfig) error {
 }
 
 // GetDB 获取数据库实例
-func (m *UnionRDBStoreInterface) GetDB() *gorm.DB {
+func (m *RDBStore) GetDB() *gorm.DB {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 	return m.db
 }
 
 // initDatabase 初始化数据库连接
-func (m *UnionRDBStoreInterface) initDatabase() error {
+func (m *RDBStore) initDatabase() error {
 	gormLogger := logger.NewGormLogger(logger.Default())
 	gormConfig := &gorm.Config{
 		Logger: gormLogger,
@@ -100,7 +104,7 @@ func (m *UnionRDBStoreInterface) initDatabase() error {
 }
 
 // initMySQL 初始化MySQL连接
-func (m *UnionRDBStoreInterface) initMySQL(config *gorm.Config) error {
+func (m *RDBStore) initMySQL(config *gorm.Config) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		m.config.Username,
 		m.config.Password,
@@ -115,7 +119,7 @@ func (m *UnionRDBStoreInterface) initMySQL(config *gorm.Config) error {
 }
 
 // initSQLite 初始化SQLite连接
-func (m *UnionRDBStoreInterface) initSQLite(config *gorm.Config) error {
+func (m *RDBStore) initSQLite(config *gorm.Config) error {
 	dbPath := m.config.File + ".db"
 	var err error
 	m.db, err = gorm.Open(sqlite.Open(dbPath), config)
@@ -123,7 +127,7 @@ func (m *UnionRDBStoreInterface) initSQLite(config *gorm.Config) error {
 }
 
 // initPostgreSQL 初始化PostgreSQL连接
-func (m *UnionRDBStoreInterface) initPostgreSQL(config *gorm.Config) error {
+func (m *RDBStore) initPostgreSQL(config *gorm.Config) error {
 	sslMode := m.config.SSLMode
 	if sslMode == "" {
 		sslMode = "disable"
@@ -144,7 +148,7 @@ func (m *UnionRDBStoreInterface) initPostgreSQL(config *gorm.Config) error {
 }
 
 // configureConnectionPool 配置数据库连接池参数
-func (m *UnionRDBStoreInterface) configureConnectionPool() error {
+func (m *RDBStore) configureConnectionPool() error {
 	dbConn, err := m.db.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get underlying database connection: %w", err)
@@ -188,7 +192,7 @@ func (m *UnionRDBStoreInterface) configureConnectionPool() error {
 }
 
 // Close 关闭数据库连接
-func (m *UnionRDBStoreInterface) Close() error {
+func (m *RDBStore) Close() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -203,7 +207,7 @@ func (m *UnionRDBStoreInterface) Close() error {
 }
 
 // HealthCheck 执行数据库健康检查
-func (m *UnionRDBStoreInterface) HealthCheck() error {
+func (m *RDBStore) HealthCheck() error {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
@@ -223,7 +227,7 @@ func (m *UnionRDBStoreInterface) HealthCheck() error {
 }
 
 // MonitorConnectionPool 监控数据库连接池状态
-func (m *UnionRDBStoreInterface) MonitorConnectionPool(ctx context.Context) {
+func (m *RDBStore) MonitorConnectionPool(ctx context.Context) {
 	if m.db == nil {
 		return
 	}
@@ -259,7 +263,7 @@ func (m *UnionRDBStoreInterface) MonitorConnectionPool(ctx context.Context) {
 }
 
 // validateConfig 验证数据库配置
-func (m *UnionRDBStoreInterface) validateConfig() error {
+func (m *RDBStore) validateConfig() error {
 	config := m.config
 
 	switch config.Type {
@@ -288,14 +292,14 @@ func (m *UnionRDBStoreInterface) validateConfig() error {
 }
 
 // IsInitialized 检查数据库是否已初始化
-func (m *UnionRDBStoreInterface) IsInitialized() bool {
+func (m *RDBStore) IsInitialized() bool {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 	return m.db != nil
 }
 
 // AutoMigrate 自动迁移表结构
-func (m *UnionRDBStoreInterface) AutoMigrate(models ...interface{}) error {
+func (m *RDBStore) AutoMigrate(models ...interface{}) error {
 	if m.db == nil {
 		return fmt.Errorf("database not initialized")
 	}
@@ -304,14 +308,14 @@ func (m *UnionRDBStoreInterface) AutoMigrate(models ...interface{}) error {
 }
 
 // GetDatabaseType 获取数据库类型
-func (m *UnionRDBStoreInterface) GetDatabaseType() DBType {
+func (m *RDBStore) GetDatabaseType() DBType {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 	return m.config.Type
 }
 
 // GetConfigInfo 获取配置信息（隐藏敏感信息）
-func (m *UnionRDBStoreInterface) GetConfigInfo() map[string]interface{} {
+func (m *RDBStore) GetConfigInfo() map[string]interface{} {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
@@ -332,7 +336,7 @@ func (m *UnionRDBStoreInterface) GetConfigInfo() map[string]interface{} {
 }
 
 // getDBTypeName 获取数据库类型名称
-func (m *UnionRDBStoreInterface) getDBTypeName(dbType DBType) string {
+func (m *RDBStore) getDBTypeName(dbType DBType) string {
 	switch dbType {
 	case MySQL:
 		return "mysql"
