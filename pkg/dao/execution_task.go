@@ -1,4 +1,3 @@
-// Package dao provides data access objects.
 package dao
 
 import (
