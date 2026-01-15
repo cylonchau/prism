@@ -28,8 +28,9 @@ Thumbs.db
 .Spotlight-V100
 .Trashes
 
-# 文档 (doc 目录下所有 .md 文件)
-doc/**/*.md
+# 文档目录（完全忽略）
+doc/
+docs/
 
 # Terraform 相关
 *.tfstate

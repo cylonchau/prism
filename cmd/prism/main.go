@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"github.com/cylonchau/prism/cmd/prism/cmd"
+	"github.com/cylonchau/prism/pkg/cli"
 )
 
 func main() {
-	if err := cmd.Execute(); err != nil {
+	if err := cli.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
